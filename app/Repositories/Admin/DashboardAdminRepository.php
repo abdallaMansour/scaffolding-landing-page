@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Contracts\CrudRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\Admin\AdminResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -33,9 +34,13 @@ class DashboardAdminRepository implements CrudRepository
 
             $admin = User::create($data);
 
+            $admin->password = Hash::make($data['password']);
+
             $admin->roles()->attach($data['roles']);
 
             $admin->addMedia($data['image'])->toMediaCollection();
+
+            $admin->save();
 
             DB::commit();
             return response()->json(['status' => true, 'message' => 'admin created successfully']);
@@ -76,7 +81,11 @@ class DashboardAdminRepository implements CrudRepository
 
             $admin->update($data);
 
+            $admin->password = Hash::make($data['password']);
+
             $admin->roles()->sync($data['roles']);
+
+            $admin->save();
 
             if (isset($data['image'])) {
                 $admin->clearMediaCollection();
