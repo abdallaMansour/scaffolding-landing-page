@@ -60,6 +60,15 @@ class PermissionsSeeder extends Seeder
     {
         return [
             [
+                'name' => 'about_us',
+                'display_name_ar' => 'من نحن',
+                'display_name_en' => 'About us',
+                'translations' => [
+                    ['locale' => 'ar', 'display_name' => 'من نحن'],
+                    ['locale' => 'en', 'display_name' => 'About us'],
+                ],
+            ],
+            [
                 'name' => 'admin',
                 'display_name_ar' => 'الإدارة',
                 'display_name_en' => 'admin',

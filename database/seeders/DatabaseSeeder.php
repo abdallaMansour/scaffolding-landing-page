@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingDatabaseSeeder::class);
         $this->call(ContactUsSeeder::class);
         $this->call(UserDatabaseSeeder::class);
+        $this->call(AboutUsSeeder::class);
     }
 
 

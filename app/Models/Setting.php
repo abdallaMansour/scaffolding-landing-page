@@ -35,4 +35,6 @@ class Setting extends Model implements HasMedia, TranslatableContract
         'whatsapp'
     ];
 
+    protected $with = ['translations'];
+
 }
