@@ -82,8 +82,6 @@ class SeoRepository implements CrudRepository
 
             $seo->addMedia($data['icon'])->toMediaCollection('icon');
         }
-
-        return $seo;
     }
 
     /**

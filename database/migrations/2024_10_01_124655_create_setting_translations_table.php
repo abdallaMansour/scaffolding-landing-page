@@ -17,7 +17,6 @@ return new class extends Migration
 
             $table->string('address')->nullable();
             $table->text('footer_description')->nullable();
-            $table->string('site_name');
 
             $table->string('locale')->index();
             $table->unique(['setting_id', 'locale']);

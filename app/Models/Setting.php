@@ -18,7 +18,6 @@ class Setting extends Model implements HasMedia, TranslatableContract
      * The attributes that are mass assignable.
      */
     protected $translatedAttributes = [
-        'site_name',
         'setting_id',
         'locale',
         'address',

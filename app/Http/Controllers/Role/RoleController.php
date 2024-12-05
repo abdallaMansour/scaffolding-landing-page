@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Role;
 
 use App\Models\Role;
+use App\Traits\ApiTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Role\RoleResource;
@@ -11,13 +12,15 @@ use App\Http\Requests\Role\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
+    use ApiTrait;
     public function index()
     {
         $roles = Role::all();
         return response()->json(RoleResource::collection($roles));
     }
 
-    public function show ($roleId) {
+    public function show($roleId)
+    {
         try {
             return  response()->json(new RoleResource(Role::findOrFail($roleId)));
         } catch (\Throwable $th) {
@@ -46,10 +49,10 @@ class RoleController extends Controller
             }
 
             DB::commit();
-            return response()->json(new RoleResource($role), 201);
+            return $this->sendSuccess(__('response.created'));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return  response()->json(['message' => $th->getMessage()], 500);
+            return $this->sendError($th->getMessage());
         }
     }
 
@@ -69,7 +72,7 @@ class RoleController extends Controller
 
             $unique_permission = array_unique($request->permissions);
 
-            DB::table('permission_role')->where('role_id' , $roleId)->delete();
+            DB::table('permission_role')->where('role_id', $roleId)->delete();
 
             for ($i = 0; $i < count($unique_permission); $i++) {
                 DB::table('permission_role')->insert([
@@ -79,19 +82,17 @@ class RoleController extends Controller
             }
 
             DB::commit();
-            return response()->json(new RoleResource($role));
+            return $this->sendSuccess(__('response.updated'));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response()->json([
-                'error' => 'you have error on update role',
-                'message' => $th->getMessage()
-            ], 400);
+            return $this->sendError($th->getMessage());
         }
     }
 
     public function destroy($roleId)
     {
         try {
+            DB::beginTransaction();
             $role = Role::find($roleId);
 
             if (!$role) {
@@ -101,13 +102,11 @@ class RoleController extends Controller
             $role->deleteTranslations();
             $role->delete();
 
-            return response()->json(['message' => 'Role deleted successfully']);
+            DB::commit();
+            return $this->sendSuccess(__('response.deleted'));
         } catch (\Throwable $th) {
-
-            return  response()->json([
-                'error' => 'you have error on delete role',
-                'message' => $th->getMessage()
-            ], 400);
+            DB::rollBack();
+            return $this->sendError($th->getMessage());
         }
     }
 }

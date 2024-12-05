@@ -22,14 +22,14 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'facebook' => 'nullable|url|max:255',
             'instagram' => 'nullable|url|max:255',
             'linkedin' => 'nullable|url|max:255',
+            'x' => 'nullable|url|max:20',
             'whatsapp' => 'nullable|string|max:20',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'nullable|image|max:2048',
             'address_en' => 'nullable|string|max:255',
             'address_ar' => 'nullable|string|max:255',
             'footer_description_ar' => 'nullable|string',

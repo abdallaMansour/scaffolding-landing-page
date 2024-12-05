@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seo;
 use App\Models\Seo;
 use App\Traits\ApiTrait;
 use App\Helpers\PageHelper;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Seo\SeoRequest;
 use App\Repositories\Seo\SeoRepository;
@@ -73,8 +74,15 @@ class DashboardSeoController extends Controller
      */
     public function update(string $page, SeoRequest $request)
     {
-        $data = $this->repository->update($page, $request->all());
+        try {
+            DB::beginTransaction();
+            $this->repository->update($page, $request->all());
 
-        return $this->sendResponse($data, trans('seo::seo.messages.updated')) ;
+            DB::commit();
+            return $this->sendSuccess(__('response.updated'));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->sendError($th->getMessage());
+        }
     }
 }

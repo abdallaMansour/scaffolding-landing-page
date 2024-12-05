@@ -15,7 +15,6 @@ class SettingTranslation extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'site_name',
         'setting_id',
         'locale',
         'address',

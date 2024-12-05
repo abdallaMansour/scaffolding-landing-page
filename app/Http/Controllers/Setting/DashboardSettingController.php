@@ -48,6 +48,6 @@ class DashboardSettingController extends Controller
      */
     public function update(UpdateSettingsRequest $request)
     {
-        return $this->repository->update('no id', $request->all());
+        return $this->repository->update($request->all());
     }
 }

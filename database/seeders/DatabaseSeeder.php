@@ -15,57 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+        // Delete old images and files from storage
         $this->clearDirectories();
 
         $this->call(PermissionsSeeder::class);
         $this->call(SeoDatabaseSeeder::class);
         $this->call(SettingDatabaseSeeder::class);
         $this->call(ContactUsSeeder::class);
-
-        $dev = User::factory()->create([
-            'name' => 'Developer',
-            'email' => 'dev@dev.com',
-        ]);
-
-        $dev->syncRoles(['super_admin']);
-
-        $dev->save();
-
-        $role = User::factory()->create([
-            'name' => 'Role user',
-            'email' => 'role@role.com',
-        ]);
-
-        $role->syncRoles(['role']);
-
-        $role->save();
-
-        $seo = User::factory()->create([
-            'name' => 'SEO',
-            'email' => 'seo@seo.com',
-        ]);
-
-        $seo->syncRoles(['seo']);
-
-        $seo->save();
-
-        $info = User::factory()->create([
-            'name' => 'Info',
-            'email' => 'info@asos.sa',
-        ]);
-
-        $info->syncRoles(['super_admin']);
-
-        $info->save();
-
-        $wali = User::factory()->create([
-            'name' => 'Waly',
-            'email' => 'waly@asos.sa',
-        ]);
-
-        $wali->syncRoles(['super_admin']);
-
-        $wali->save();
+        $this->call(UserDatabaseSeeder::class);
     }
 
 
@@ -81,6 +38,6 @@ class DatabaseSeeder extends Seeder
             File::deleteDirectory($folder);
         }
 
-        echo ('All folders in the storage path have been deleted.');
+        echo ("  All folders in the storage path have been deleted.\n\n");
     }
 }
