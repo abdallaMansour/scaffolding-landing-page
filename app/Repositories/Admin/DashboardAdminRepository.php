@@ -4,7 +4,6 @@ namespace App\Repositories\Admin;
 
 use Exception;
 use App\Models\User;
-use App\Contracts\CrudRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +11,7 @@ use App\Http\Resources\Admin\AdminResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class DashboardAdminRepository implements CrudRepository
+class DashboardAdminRepository
 {
 
     /**

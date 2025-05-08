@@ -2,42 +2,43 @@
 
 namespace App\Http\Controllers\Setting;
 
+use App\Helpers\ApiResponse;
 use App\Models\Setting;
 use App\Traits\ApiTrait;
+use App\Helpers\Languages;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Repositories\Setting\SettingRepository;
 use App\Http\Requests\Settings\UpdateSettingsRequest;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use App\Http\Resources\Setting\DashboardSettingResource;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class DashboardSettingController extends Controller
 {
-    use AuthorizesRequests, ValidatesRequests, ApiTrait;
+    use ApiTrait;
 
-    /**
-     * @var SettingRepository
-     */
-    private $repository;
-
-    /**
-     * SettingController constructor.
-     * @param SettingRepository $repository
-     */
-    public function __construct(SettingRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
-     * Show the specified resource.
-     * 
-     * @return \Illuminate\Http\JsonResponse
-     * @throws AuthorizationException
-     */
     public function index()
     {
-        return new DashboardSettingResource(Setting::first());
+
+        $settings = Setting::all();
+
+        $data = [];
+
+        foreach ($settings as $setting) {
+            // لو فيه لغة نحطها ضمن المفتاح
+            $key = $setting->lang ? "{$setting->key}_{$setting->lang}" : $setting->key;
+
+            // لو المفتاح هو logo و value هو path نحوله لرابط كامل
+            if ($setting->key === 'logo') {
+                $data[$key] = $setting->getFirstMediaUrl();
+            } else {
+                $data[$key] = $setting->value;
+            }
+        }
+
+        return response()->json([
+            'data' => $data
+        ]);
+
+
+        // return DashboardSettingResource::collection(Setting::all());
     }
 
     /**
@@ -48,6 +49,35 @@ class DashboardSettingController extends Controller
      */
     public function update(UpdateSettingsRequest $request)
     {
-        return $this->repository->update($request->all());
+
+        try {
+            DB::beginTransaction();
+
+            foreach (Setting::all() as $setting) {
+
+
+                if ($setting->lang != null) {
+                    foreach (Languages::LANGS as $lang) {
+                        $setting->value = $request->{$setting->key . '_' . $lang};
+                    }
+                } elseif ($setting->key === 'logo') {
+                    if ($request->hasFile('logo')) {
+                        $setting->clearMediaCollection();
+
+                        $setting->addMedia($request->file('logo'))->toMediaCollection();
+                    }
+                } else {
+                    $setting->value = $request->{$setting->key};
+                }
+
+                $setting->save();
+            }
+
+            DB::commit();
+            return ApiResponse::response(['status' => true, 'message' => __('response.updated')]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ApiResponse::response(['error' => $th->getMessage()], 500);
+        }
     }
 }

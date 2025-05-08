@@ -4,8 +4,6 @@ namespace App\Repositories\ContactUs;
 
 use Exception;
 use App\Models\ContactUs;
-use App\Mail\ContactUsEmail;
-use App\Contracts\CrudRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +11,7 @@ use App\Http\Resources\ContactUs\ContactUsResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ContactUsRepository implements CrudRepository
+class ContactUsRepository
 {
 
     /**
@@ -62,16 +60,6 @@ class ContactUsRepository implements CrudRepository
         } catch (\Throwable $th) {
             throw new HttpResponseException(response()->json(['error' => 'Not Found'], 404));
         }
-    }
-
-    /**
-     * @param mixed $model
-     * @param array $data
-     * @return Model|ContactUs|void
-     */
-    public function update($id, array $data)
-    {
-        return response()->json(['message' => 'Not found'], 404);
     }
 
     /**

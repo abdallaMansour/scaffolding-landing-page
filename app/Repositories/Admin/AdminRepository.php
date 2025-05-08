@@ -4,14 +4,12 @@ namespace App\Repositories\Admin;
 
 use Exception;
 use App\Models\User;
-use App\Contracts\CrudRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\Admin\AdminResource;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class AdminRepository implements CrudRepository
+class AdminRepository
 {
 
     /**
@@ -20,24 +18,6 @@ class AdminRepository implements CrudRepository
     public function all()
     {
         return new AdminResource(User::first());
-    }
-
-    /**
-     * @param array $data
-     * @return Model
-     */
-    public function create(array $data)
-    {
-        return response()->json(['message' => 'Not found'], 404);
-    }
-
-    /**
-     * @param mixed $model
-     * @return Model|void
-     */
-    public function find($model)
-    {
-        return response()->json(['message' => 'Not found'], 404);
     }
 
     /**
@@ -69,14 +49,5 @@ class AdminRepository implements CrudRepository
             DB::rollBack();
             return response()->json(['error' => $th->getMessage()], 500);
         }
-    }
-
-    /**
-     * @param mixed $model
-     * @throws Exception
-     */
-    public function delete($model)
-    {
-        return response()->json(['message' => 'Not found'], 404);
     }
 }

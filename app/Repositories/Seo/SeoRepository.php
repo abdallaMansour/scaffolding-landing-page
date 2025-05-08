@@ -2,46 +2,10 @@
 
 namespace App\Repositories\Seo;
 
-use Exception;
 use App\Models\Seo;
-use App\Contracts\CrudRepository;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class SeoRepository implements CrudRepository
+class SeoRepository
 {
-
-    /**
-     * @return LengthAwarePaginator
-     */
-    public function all()
-    {
-        return response()->json(['error' => 'Not Found'], 404);
-    }
-
-    /**
-     * @param array $data
-     * @return Model
-     */
-    public function create(array $data)
-    {
-        return response()->json(['error' => 'Not Found'], 404);
-    }
-
-    /**
-     * @param mixed $model
-     * @return Model|void
-     */
-    public function find($model)
-    {
-        return response()->json(['error' => 'Not Found'], 404);
-    }
-
-    /**
-     * @param mixed $model
-     * @param array $data
-     * @return Model|Seo|void
-     */
     public function update($seo_id, array $data)
     {
         $seo = Seo::where('name_id', $seo_id)->first();
@@ -61,35 +25,22 @@ class SeoRepository implements CrudRepository
             $dataToUpdate['site_name:en'] = $data['site_name_en'];
         }
 
-        if ($seo) {
-            // Update existing record
+        if ($seo)
             $seo->update($dataToUpdate);
-        } else {
-            // Create a new record
+        else
             Seo::create(array_merge(['name_id' => $seo_id], $dataToUpdate));
-        }
+
 
         if (isset($data['image'])) {
 
             $seo->clearMediaCollection('image');
-
             $seo->addMedia($data['image'])->toMediaCollection('image');
         }
 
         if (isset($data['icon'])) {
 
             $seo->clearMediaCollection('icon');
-
             $seo->addMedia($data['icon'])->toMediaCollection('icon');
         }
-    }
-
-    /**
-     * @param mixed $model
-     * @throws Exception
-     */
-    public function delete($model)
-    {
-        return response()->json(['error' => 'Not Found'], 404);
     }
 }

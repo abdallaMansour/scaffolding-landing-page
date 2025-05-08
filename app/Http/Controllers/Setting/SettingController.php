@@ -17,12 +17,31 @@ class SettingController extends Controller
      */
     public function index()
     {
-        return new SettingResource(Setting::first());
+
+        $settings = Setting::where('lang', app()->getLocale())
+            ->orWhereNull('lang')
+            ->get();
+
+        $data = [];
+
+        foreach ($settings as $setting) {
+            $key = $setting->key;
+
+            if ($setting->key === 'logo') {
+                $data[$key] = $setting->getFirstMediaUrl();
+            } else {
+                $data[$key] = $setting->value;
+            }
+        }
+
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
 
     public function logo()
     {
-        return response()->json(['logo' => Setting::first()->getFirstMediaUrl()]);
+        return response()->json(['logo' => Setting::where('key', 'logo')->first()->getFirstMediaUrl()]);
     }
 }
